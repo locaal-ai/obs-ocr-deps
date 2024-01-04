@@ -15,6 +15,7 @@ jobs:
     runs-on: "macos-13"
     env:
       LEPTONICA_VERSION: "1.84.1"
+      TESSERACT_VERSION: "5.3.3"
 
     strategy:
       matrix:
@@ -31,7 +32,7 @@ jobs:
         run: |
           if [[ $GITHUB_REF =~ ^refs/tags/ ]]
           then version="${GITHUB_REF#refs/tags/}"
-          else version=main
+          else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
 
@@ -58,6 +59,7 @@ jobs:
     runs-on: "ubuntu-22.04"
     env:
       LEPTONICA_VERSION: "1.84.1"
+      TESSERACT_VERSION: "5.3.3"
 
     strategy:
       matrix:
@@ -74,7 +76,7 @@ jobs:
         run: |
           if [[ $GITHUB_REF =~ ^refs/tags/ ]]
           then version="${GITHUB_REF#refs/tags/}"
-          else version=main
+          else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
@@ -96,6 +98,7 @@ jobs:
     runs-on: "windows-2022"
     env:
       LEPTONICA_VERSION: "1.84.1"
+      TESSERACT_VERSION: "5.3.3"
 
     strategy:
       matrix:
@@ -109,7 +112,7 @@ jobs:
         run: |
           if [[ $GITHUB_REF =~ ^refs/tags/ ]]
           then version="${GITHUB_REF#refs/tags/}"
-          else version=main
+          else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
