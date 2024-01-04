@@ -37,6 +37,7 @@ jobs:
           version="${version%-1}"
 
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
         id: "get-version"
 
       - name: Download Leptonica Source
@@ -48,7 +49,7 @@ jobs:
           wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
 
       - name: "Run build-macos.sh"
-        run: "./build-macos.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} $LEPTONICA_VERSION"
+        run: "./build-macos.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} ${{ steps.get-version.outputs.leptonica_version }}"
 
       - uses: "actions/upload-artifact@v3"
         with:
@@ -80,14 +81,19 @@ jobs:
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
         id: "get-version"
 
-      - uses: "actions/checkout@v4"
-        with:
-          submodules: "recursive"
+      - name: Download Leptonica Source
+        run: |
+          wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
+
+      - name: Download Tesseract Source
+        run: |
+          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
 
       - name: "Run build-linux.sh"
-        run: "./build-linux.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} $LEPTONICA_VERSION"
+        run: "./build-linux.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} ${{ steps.get-version.outputs.leptonica_version }}"
 
       - uses: "actions/upload-artifact@v3"
         with:
@@ -116,6 +122,7 @@ jobs:
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
         id: "get-version"
 
       - uses: "actions/checkout@v4"
@@ -123,7 +130,7 @@ jobs:
           submodules: "recursive"
 
       - name: "Run Build-Windows.ps1"
-        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion ${{ steps.get-version.outputs.version }} -LeptonicaVersion $LEPTONICA_VERSION"
+        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion ${{ steps.get-version.outputs.version }} -LeptonicaVersion ${{ steps.get-version.outputs.leptonica_version }}"
 
       - uses: "actions/upload-artifact@v3"
         with:
