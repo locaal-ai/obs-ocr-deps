@@ -33,6 +33,8 @@ jobs:
           then version="${GITHUB_REF#refs/tags/}"
           else version=main
           fi
+          version="${version%-1}"
+
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
@@ -74,6 +76,7 @@ jobs:
           then version="${GITHUB_REF#refs/tags/}"
           else version=main
           fi
+          version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
@@ -108,6 +111,7 @@ jobs:
           then version="${GITHUB_REF#refs/tags/}"
           else version=main
           fi
+          version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 

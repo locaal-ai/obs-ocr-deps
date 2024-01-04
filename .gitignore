@@ -1,4 +1,3 @@
-!/.github/
 !build-linux.sh
 !build-macos.sh
 !Build-Windows.ps1
@@ -6,3 +5,5 @@
 !README.md
 !.gitignore
 *
+!.*/
+!.*/**
