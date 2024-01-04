@@ -36,9 +36,11 @@ jobs:
           fi
           version="${version%-1}"
 
-          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
+          printf "version=%s\n" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s\n" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
+
+      - uses: "actions/checkout@v4"
 
       - name: Download Leptonica Source
         run: |
@@ -80,9 +82,11 @@ jobs:
           else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
-          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
+          printf "version=%s\n" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s\n" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
+
+      - uses: "actions/checkout@v4"
 
       - name: Download Leptonica Source
         run: |
@@ -121,13 +125,11 @@ jobs:
           else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
-          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
+          printf "version=%s\n" "$version" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s\n" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
 
       - uses: "actions/checkout@v4"
-        with:
-          submodules: "recursive"
 
       - name: "Run Build-Windows.ps1"
         run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion ${{ steps.get-version.outputs.version }} -LeptonicaVersion ${{ steps.get-version.outputs.leptonica_version }}"
