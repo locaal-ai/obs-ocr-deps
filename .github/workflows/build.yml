@@ -37,7 +37,7 @@ jobs:
           version="${version%-1}"
 
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
 
       - name: Download Leptonica Source
@@ -81,7 +81,7 @@ jobs:
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
 
       - name: Download Leptonica Source
@@ -122,7 +122,7 @@ jobs:
           fi
           version="${version%-1}"
           printf "version=%s" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s" "$LEPTONICA_VERSION" > "$GITHUB_OUTPUT"
+          printf "leptonica_version=%s" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
         id: "get-version"
 
       - uses: "actions/checkout@v4"
