@@ -1,0 +1,164 @@
+name: "Build"
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  BuildMac:
+    runs-on: "macos-13"
+    env:
+      LEPTONICA_VERSION: "1.84.1"
+
+    strategy:
+      matrix:
+        config:
+          - "Debug"
+          - "Release"
+
+    defaults:
+      run:
+        shell: "bash"
+
+    steps:
+      - name: "Get version"
+        run: |
+          if [[ $GITHUB_REF =~ ^refs/tags/ ]]
+          then version="${GITHUB_REF#refs/tags/}"
+          else version=main
+          fi
+          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+        id: "get-version"
+
+      - name: Download Leptonica Source
+        run: |
+          wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
+
+      - name: Download Tesseract Source
+        run: |
+          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
+
+      - name: "Run build-macos.sh"
+        run: "./build-macos.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} $LEPTONICA_VERSION"
+
+      - uses: "actions/upload-artifact@v3"
+        with:
+          name: "tesseract-macos-${{ matrix.config }}"
+          path: "release/*.tar.gz"
+
+  BuildLinux:
+    runs-on: "ubuntu-22.04"
+    env:
+      LEPTONICA_VERSION: "1.84.1"
+
+    strategy:
+      matrix:
+        config:
+          - "Debug"
+          - "Release"
+
+    defaults:
+      run:
+        shell: "bash"
+
+    steps:
+      - name: "Get version"
+        run: |
+          if [[ $GITHUB_REF =~ ^refs/tags/ ]]
+          then version="${GITHUB_REF#refs/tags/}"
+          else version=main
+          fi
+          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+        id: "get-version"
+
+      - uses: "actions/checkout@v4"
+        with:
+          submodules: "recursive"
+
+      - name: "Run build-linux.sh"
+        run: "./build-linux.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} $LEPTONICA_VERSION"
+
+      - uses: "actions/upload-artifact@v3"
+        with:
+          name: "tesseract-linux-${{ matrix.config }}"
+          path: "release/*.tar.gz"
+
+  BuildWindows:
+    runs-on: "windows-2022"
+    env:
+      LEPTONICA_VERSION: "1.84.1"
+
+    strategy:
+      matrix:
+        config:
+          - "Debug"
+          - "Release"
+
+    steps:
+      - name: "Get version"
+        shell: bash
+        run: |
+          if [[ $GITHUB_REF =~ ^refs/tags/ ]]
+          then version="${GITHUB_REF#refs/tags/}"
+          else version=main
+          fi
+          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+        id: "get-version"
+
+      - uses: "actions/checkout@v4"
+        with:
+          submodules: "recursive"
+
+      - name: "Run Build-Windows.ps1"
+        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion ${{ steps.get-version.outputs.version }} -LeptonicaVersion $LEPTONICA_VERSION"
+
+      - uses: "actions/upload-artifact@v3"
+        with:
+          name: "tesseract-windows-${{ matrix.config }}"
+          path: "release/*.zip"
+
+  Release:
+    runs-on: "ubuntu-22.04"
+
+    if: "github.event_name == 'push' && contains(github.ref, 'refs/tags/')"
+
+    needs:
+      - "BuildMac"
+      - "BuildLinux"
+      - "BuildWindows"
+
+    permissions:
+      contents: "write"
+
+    defaults:
+      run:
+        shell: "bash"
+
+    steps:
+      - name: "Get version"
+        run: |
+          if [[ $GITHUB_REF =~ ^refs/tags/ ]]
+          then version="${GITHUB_REF#refs/tags/}"
+          else version=main
+          fi
+          printf "version=%s" "$version" > "$GITHUB_OUTPUT"
+        id: "get-version"
+
+      - name: "Download build artifacts"
+        uses: "actions/download-artifact@v3"
+
+      - name: "Create Release"
+        uses: "softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5"
+        with:
+          draft: true
+          tag_name: "${{ steps.get-version.outputs.version }}"
+          name: "${{ steps.get-version.outputs.version }}"
+          files: |
+            ${{ github.workspace }}/**/*.tar.gz
+            ${{ github.workspace }}/**/*.zip

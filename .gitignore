@@ -1,8 +1,8 @@
-*
+!/.github/
 !build-linux.sh
 !build-macos.sh
 !Build-Windows.ps1
 !LICENSE
 !README.md
 !.gitignore
-!.github
+*
