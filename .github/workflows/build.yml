@@ -55,7 +55,7 @@ jobs:
       - name: Apply Patch
         run: |
           cd "tesseract-$TESSERACT_VERSION"
-          patch < patch_tesseract.diff
+          patch < ../patch_tesseract.diff
 
       - name: Install CMake
         run: brew install cmake
@@ -140,23 +140,26 @@ jobs:
           else version=$TESSERACT_VERSION
           fi
           version="${version%-1}"
-          printf "version=%s\n" "$version" > "$GITHUB_OUTPUT"
-          printf "leptonica_version=%s\n" "$LEPTONICA_VERSION" >> "$GITHUB_OUTPUT"
+          printf "TESSERACT_VERSION=%s\n" "$TESSERACT_VERSION" > "$GITHUB_ENV"
+          printf "LEPTONICA_VERSION=%s\n" "$LEPTONICA_VERSION" >> "$GITHUB_ENV"
         id: "get-version"
 
       - uses: "actions/checkout@v4"
 
       - name: Download Leptonica Source
+        shell: pwsh
         run: |
           Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$env:LEPTONICA_VERSION.tar.gz" -OutFile "$env:LEPTONICA_VERSION.tar.gz"
           Expand-Archive -Path "$env:LEPTONICA_VERSION.tar.gz" -DestinationPath "."
 
       - name: Download Tesseract Source
+        shell: pwsh
         run: |
           Invoke-WebRequest -Uri https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$env:TESSERACT_VERSION.tar.gz -OutFile "$env:TESSERACT_VERSION.tar.gz"
           Expand-Archive -Path "$env:TESSERACT_VERSION.tar.gz" -DestinationPath "."
 
       - name: "Run Build-Windows.ps1"
+        shell: pwsh
         run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion $env:TESSERACT_VERSION -LeptonicaVersion $env:LEPTONICA_VERSION"
 
       - uses: "actions/upload-artifact@v3"
