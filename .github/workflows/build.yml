@@ -44,16 +44,19 @@ jobs:
 
       - name: Download Leptonica Source
         run: |
-          wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
-          tar -xzf $LEPTONICA_VERSION.tar.gz -C leptonica-$LEPTONICA_VERSION --strip-components=1
+          wget "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz"
+          tar -xzf "$LEPTONICA_VERSION.tar.gz"
 
       - name: Download Tesseract Source
         run: |
-          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
-          tar -xzf ${{ steps.get-version.outputs.version }}.tar.gz -C tesseract-${{ steps.get-version.outputs.version }} --strip-components=1
+          wget "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz"
+          tar -xzf "$TESSERACT_VERSION.tar.gz"
+
+      - name: Install CMake
+        run: brew install cmake
 
       - name: "Run build-macos.sh"
-        run: "./build-macos.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} ${{ steps.get-version.outputs.leptonica_version }}"
+        run: "./build-macos.sh ${{ matrix.config }} $TESSERACT_VERSION $LEPTONICA_VERSION"
 
       - uses: "actions/upload-artifact@v3"
         with:
@@ -92,16 +95,19 @@ jobs:
 
       - name: Download Leptonica Source
         run: |
-          wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
-          tar -xzf $LEPTONICA_VERSION.tar.gz -C leptonica-$LEPTONICA_VERSION --strip-components=1
+          wget "https://github.com/DanBloomberg/leptonica/archive/refs/tags/${LEPTONICA_VERSION}.tar.gz"
+          tar -xzf "$LEPTONICA_VERSION.tar.gz"
 
       - name: Download Tesseract Source
         run: |
-          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
-          tar -xzf ${{ steps.get-version.outputs.version }}.tar.gz -C tesseract-${{ steps.get-version.outputs.version }} --strip-components=1
+          wget "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz"
+          tar -xzf "$TESSERACT_VERSION.tar.gz"
+
+      - name: Install CMake
+        run: sudo apt-get update && sudo apt-get install -y cmake
 
       - name: "Run build-linux.sh"
-        run: "./build-linux.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }} ${{ steps.get-version.outputs.leptonica_version }}"
+        run: "./build-linux.sh ${{ matrix.config }} $TESSERACT_VERSION $LEPTONICA_VERSION"
 
       - uses: "actions/upload-artifact@v3"
         with:
@@ -138,15 +144,15 @@ jobs:
       - name: Download Leptonica Source
         run: |
           wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
-          tar -xzf $LEPTONICA_VERSION.tar.gz -C leptonica-$LEPTONICA_VERSION --strip-components=1
+          tar -xzf "$LEPTONICA_VERSION.tar.gz"
 
       - name: Download Tesseract Source
         run: |
-          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/${{ steps.get-version.outputs.version }}.tar.gz
-          tar -xzf ${{ steps.get-version.outputs.version }}.tar.gz -C tesseract-${{ steps.get-version.outputs.version }} --strip-components=1
+          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz
+          tar -xzf "$TESSERACT_VERSION.tar.gz"
 
       - name: "Run Build-Windows.ps1"
-        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion ${{ steps.get-version.outputs.version }} -LeptonicaVersion ${{ steps.get-version.outputs.leptonica_version }}"
+        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion $TESSERACT_VERSION -LeptonicaVersion $LEPTONICA_VERSION"
 
       - uses: "actions/upload-artifact@v3"
         with:

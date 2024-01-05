@@ -3,7 +3,6 @@ set -euo pipefail
 
 CONFIG="${1?}"
 VERSION="${2?}"
-ARCHITECTURE="x86_64"
 
 # configure leptonica
 cmake leptonica-$LEPTONICA_VERSION -B "leptonica_build_$CONFIG" \
@@ -25,8 +24,8 @@ cmake --build "leptonica_build_$CONFIG"
 cmake --install "leptonica_build_$CONFIG" --prefix "release/leptonica/$CONFIG"
 
 # configure tesseract
-cmake tesseract-$TESSERACT_VERSION -B "tesseract_build_${CONFIG}_$ARCHITECTURE" \
-  -DCMAKE_INSTALL_PREFIX="release/tesseract/$CONFIG/$ARCHITECTURE" \
+cmake tesseract-$TESSERACT_VERSION -B "tesseract_build_${CONFIG}" \
+  -DCMAKE_INSTALL_PREFIX="release/tesseract/$CONFIG" \
   -DCMAKE_BUILD_TYPE="$CONFIG" \
   -DBUILD_SHARED_LIBS=OFF \
   -DLeptonica_DIR="$(pwd)/release/leptonica/$CONFIG/lib/cmake/leptonica" \
@@ -38,11 +37,11 @@ cmake tesseract-$TESSERACT_VERSION -B "tesseract_build_${CONFIG}_$ARCHITECTURE" 
   -DDISABLE_CURL=ON
 
 # build
-cmake --build "tesseract_build_${CONFIG}_$ARCHITECTURE"
-cmake --install "tesseract_build_${CONFIG}_$ARCHITECTURE" --prefix "release/tesseract/$CONFIG/$ARCHITECTURE"
+cmake --build "tesseract_build_${CONFIG}"
+cmake --install "tesseract_build_${CONFIG}" --prefix "release/tesseract/$CONFIG"
 
 # copy leptonica static libraries to tesseract
-cp -r "release/leptonica/$CONFIG/lib" "release/tesseract/$CONFIG/$ARCHITECTURE/lib"
+cp -r "release/leptonica/$CONFIG/lib" "release/tesseract/$CONFIG/lib"
 
-tar -C "release/$CONFIG" -cvf "release/opencv-linux-$VERSION-$CONFIG.tar.gz" .
+tar -C "release/tesseract/$CONFIG" -cvf "release/tesseract-linux-$VERSION-$CONFIG.tar.gz" .
 
