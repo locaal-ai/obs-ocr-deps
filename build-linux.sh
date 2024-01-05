@@ -41,7 +41,7 @@ cmake --build "tesseract_build_${CONFIG}"
 cmake --install "tesseract_build_${CONFIG}" --prefix "release/tesseract/$CONFIG"
 
 # copy leptonica static libraries to tesseract
-cp -r "release/leptonica/$CONFIG/lib" "release/tesseract/$CONFIG/lib"
+cp -r "release/leptonica/$CONFIG/lib" "release/tesseract/$CONFIG/"
 
 tar -C "release/tesseract/$CONFIG" -cvf "release/tesseract-linux-$VERSION-$CONFIG.tar.gz" .
 
