@@ -149,7 +149,12 @@ jobs:
       - name: Download Leptonica Source
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$env:LEPTONICA_VERSION.tar.gz" -OutFile "$env:LEPTONICA_VERSION.tar.gz"
+          try {
+            $response = Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$env:LEPTONICA_VERSION.tar.gz" -OutFile "$env:LEPTONICA_VERSION.tar.gz"
+          } catch {
+            Write-Host "Failed to download Leptonica source: $($_.Exception)"
+            exit 1
+          }
           Expand-Archive -Path "$env:LEPTONICA_VERSION.tar.gz" -DestinationPath "."
 
       - name: Download Tesseract Source
