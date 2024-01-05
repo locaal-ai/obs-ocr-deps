@@ -36,10 +36,15 @@ cmake tesseract-$TesseractVersion -B "tesseract_build_${Configuration}" `
 
 # build
 cmake --build "tesseract_build_${Configuration}" --config $Configuration
-cmake --install "tesseract_build_${Configuration}" --config $Configuration --prefix release/tesseract/$Configuration
+cmake --install "tesseract_build_${Configuration}" --config $Configuration --prefix release\tesseract\$Configuration
 
 # copy leptonica static libs to tesseract lib folder
-Copy-Item release\leptonica\$Configuration\lib\leptonica-$LeptonicaVersion.lib release\tesseract\$Configuration\lib
+# if config is debug add a "d" to the end of the lib name
+if ($Configuration -eq "Debug") {
+  Copy-Item release\leptonica\$Configuration\lib\leptonica-${LeptonicaVersion}d.lib release\tesseract\$Configuration\lib
+} else {
+  Copy-Item release\leptonica\$Configuration\lib\leptonica-${LeptonicaVersion}.lib release\tesseract\$Configuration\lib
+}
 
 Compress-Archive release\tesseract\$Configuration\* release\tesseract-windows-$TesseractVersion-$Configuration.zip -Verbose
 
