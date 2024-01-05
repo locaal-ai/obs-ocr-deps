@@ -149,19 +149,14 @@ jobs:
       - name: Download Leptonica Source
         shell: powershell
         run: |
-          try {
-            $response = Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$env:LEPTONICA_VERSION.tar.gz" -OutFile "$env:LEPTONICA_VERSION.tar.gz"
-          } catch {
-            Write-Host "Failed to download Leptonica source: $($_.Exception)"
-            exit 1
-          }
-          Expand-Archive -Path "$env:LEPTONICA_VERSION.tar.gz" -DestinationPath "."
+          Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$env:LEPTONICA_VERSION.zip" -OutFile "$env:LEPTONICA_VERSION.zip"
+          Expand-Archive -Path "$env:LEPTONICA_VERSION.zip" -DestinationPath "."
 
       - name: Download Tesseract Source
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$env:TESSERACT_VERSION.tar.gz -OutFile "$env:TESSERACT_VERSION.tar.gz"
-          Expand-Archive -Path "$env:TESSERACT_VERSION.tar.gz" -DestinationPath "."
+          Invoke-WebRequest -Uri https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$env:TESSERACT_VERSION.zip -OutFile "$env:TESSERACT_VERSION.zip"
+          Expand-Archive -Path "$env:TESSERACT_VERSION.zip" -DestinationPath "."
 
       - name: "Run Build-Windows.ps1"
         shell: pwsh
