@@ -17,7 +17,8 @@ cmake leptonica-$LEPTONICA_VERSION -B "leptonica_build_$CONFIG" \
   -DENABLE_JPEG=OFF \
   -DENABLE_TIFF=OFF \
   -DENABLE_WEBP=OFF \
-  -DENABLE_OPENJPEG=OFF
+  -DENABLE_OPENJPEG=OFF \
+  -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
 # build leptonica
 cmake --build "leptonica_build_$CONFIG"
@@ -34,7 +35,8 @@ cmake tesseract-$TESSERACT_VERSION -B "tesseract_build_${CONFIG}" \
   -DBUILD_TESTS=OFF \
   -DDISABLED_LEGACY_ENGINE=ON \
   -DDISABLE_TIFF=ON \
-  -DDISABLE_CURL=ON
+  -DDISABLE_CURL=ON \
+  -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
 # build
 cmake --build "tesseract_build_${CONFIG}"
