@@ -1,0 +1,13 @@
+diff --git a/src/arch/simddetect.cpp b/src/arch/simddetect.cpp
+index 1afe5a5..f654c1f 100644
+--- a/src/arch/simddetect.cpp
++++ b/src/arch/simddetect.cpp
+@@ -254,7 +254,7 @@ SIMDDetect::SIMDDetect() {
+     // SSE detected.
+     SetDotProduct(DotProductSSE, &IntSimdMatrix::intSimdMatrixSSE);
+ #endif
+-#if defined(HAVE_NEON) || defined(__aarch64__)
++#if defined(HAVE_NEON)
+   } else if (neon_available_) {
+     // NEON detected.
+     SetDotProduct(DotProductNEON, &IntSimdMatrix::intSimdMatrixNEON);

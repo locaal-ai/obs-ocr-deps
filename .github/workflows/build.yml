@@ -52,6 +52,10 @@ jobs:
           wget "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz"
           tar -xzf "$TESSERACT_VERSION.tar.gz"
 
+      - name: Apply Patch
+        run: |
+          patch < patch_tesseract.diff
+
       - name: Install CMake
         run: brew install cmake
 
@@ -143,13 +147,13 @@ jobs:
 
       - name: Download Leptonica Source
         run: |
-          wget https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz
-          tar -xzf "$LEPTONICA_VERSION.tar.gz"
+          Invoke-WebRequest -Uri "https://github.com/DanBloomberg/leptonica/archive/refs/tags/$LEPTONICA_VERSION.tar.gz" -OutFile "$LEPTONICA_VERSION.tar.gz"
+          Expand-Archive -Path "$LEPTONICA_VERSION.tar.gz" -DestinationPath "."
 
       - name: Download Tesseract Source
         run: |
-          wget https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz
-          tar -xzf "$TESSERACT_VERSION.tar.gz"
+          Invoke-WebRequest -Uri https://github.com/tesseract-ocr/tesseract/archive/refs/tags/$TESSERACT_VERSION.tar.gz -OutFile "$TESSERACT_VERSION.tar.gz"
+          Expand-Archive -Path "$TESSERACT_VERSION.tar.gz" -DestinationPath "."
 
       - name: "Run Build-Windows.ps1"
         run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -TesseractVersion $TESSERACT_VERSION -LeptonicaVersion $LEPTONICA_VERSION"
