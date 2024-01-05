@@ -31,7 +31,7 @@ configure_and_build_tesseract() {
     $EXTRA_CMAKE_FLAGS
 
   # build
-  cmake --build "tesseract_build_${CONFIG}_$ARCHITECTURE" -- -j12
+  cmake --build "tesseract_build_${CONFIG}_$ARCHITECTURE"
   cmake --install "tesseract_build_${CONFIG}_$ARCHITECTURE" --prefix "prerelease/tesseract/$CONFIG/$ARCHITECTURE"
 }
 
@@ -51,7 +51,7 @@ cmake leptonica-$LEPTONICA_VERSION -B "leptonica_build_$CONFIG" \
   -DENABLE_OPENJPEG=OFF
 
 # build leptonica
-cmake --build "leptonica_build_$CONFIG" -- -j12
+cmake --build "leptonica_build_$CONFIG"
 cmake --install "leptonica_build_$CONFIG" --prefix "release/leptonica/$CONFIG"
 
 # configure and build tesseract for x86_64
