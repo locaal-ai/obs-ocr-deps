@@ -2,10 +2,13 @@
 set -euo pipefail
 
 CONFIG="${1?}"
-VERSION="${2?}"
+TESSERACT_VERSION="${2?}"
+LEPTONICA_VERSION="${3?}"
+TESSERACT_DIR="${4-tesseract-$TESSERACT_VERSION}"
+LEPTONICA_DIR="${5-leptonica-$LEPTONICA_VERSION}"
 
 # configure leptonica
-cmake leptonica-$LEPTONICA_VERSION -B "leptonica_build_$CONFIG" \
+cmake $LEPTONICA_DIR -B "leptonica_build_$CONFIG" \
   -DCMAKE_INSTALL_PREFIX="release/leptonica/$CONFIG" \
   -DCMAKE_BUILD_TYPE="$CONFIG" \
   -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
@@ -25,7 +28,7 @@ cmake --build "leptonica_build_$CONFIG"
 cmake --install "leptonica_build_$CONFIG" --prefix "release/leptonica/$CONFIG"
 
 # configure tesseract
-cmake tesseract-$TESSERACT_VERSION -B "tesseract_build_${CONFIG}" \
+cmake $TESSERACT_DIR -B "tesseract_build_${CONFIG}" \
   -DCMAKE_INSTALL_PREFIX="release/tesseract/$CONFIG" \
   -DCMAKE_BUILD_TYPE="$CONFIG" \
   -DBUILD_SHARED_LIBS=OFF \
@@ -45,5 +48,5 @@ cmake --install "tesseract_build_${CONFIG}" --prefix "release/tesseract/$CONFIG"
 # copy leptonica static libraries to tesseract
 cp -r "release/leptonica/$CONFIG/lib" "release/tesseract/$CONFIG/"
 
-tar -C "release/tesseract/$CONFIG" -cvf "release/tesseract-linux-$VERSION-$CONFIG.tar.gz" .
+tar -C "release/tesseract/$CONFIG" -cvf "release/tesseract-linux-$TESSERACT_VERSION-$CONFIG.tar.gz" .
 
